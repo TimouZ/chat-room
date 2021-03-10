@@ -50,6 +50,7 @@ logging.info(f'Started new server(room) {args.chat_room_name} on {args.ip_addres
 
 active_clients = []
 
+
 def clientthread(conn, addr):
     conn.send(f'Welcome to {args.chat_room_name} chat room'.encode())
     while True:
@@ -66,31 +67,39 @@ def clientthread(conn, addr):
         except:
             continue
 
+
 def broadcast(message, connection):
     for clients in active_clients:
-        if clients!=connection:
+        if clients != connection:
             try:
                 clients.send(message)
             except:
                 clients.close()
                 remove_connection(clients)
 
+
 def remove_connection(connection):
     if connection in active_clients:
         active_clients.remove(connection)
         logging.info(f'{connection} removed')
 
-while True:
-    conn, addr = server.accept()
 
-    active_clients.append(conn)
-    print(addr[0] + ' connected')
-    logging.info(f'{addr[0]} connected')
+def main():
+    while True:
+        conn, addr = server.accept()
 
-    threading.Thread(target=clientthread,
-                     args=(conn, addr)
-                     ).start()
+        active_clients.append(conn)
+        print(addr[0] + ' connected')
+        logging.info(f'{addr[0]} connected')
 
-conn.close()
-server.close()
-logging.info(f'Closed new server(room) {chat_room_name} on {ip_address}:{port}')
+        threading.Thread(target=clientthread,
+                         args=(conn, addr)
+                         ).start()
+
+    conn.close()
+    server.close()
+    logging.info(f'Closed new server(room) {chat_room_name} on {ip_address}:{port}')
+
+
+if __name__ == '__main__':
+    main()

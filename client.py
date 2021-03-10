@@ -4,9 +4,6 @@ import sys
 import argparse
 
 
-client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-
 args_parser = argparse.ArgumentParser(prog='TCP chat client',
                                       description='TCP chat client. Default ip: 127.0.0.1, port: 8081 ')
 args_parser.add_argument('-ip',
@@ -23,6 +20,7 @@ args_parser.add_argument('-port',
 
 args = args_parser.parse_args()
 
+client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client.connect((args.ip, args.port))
 
 while True:
